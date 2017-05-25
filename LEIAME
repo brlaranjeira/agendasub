@@ -1,0 +1,3 @@
+diretorio /lib disponivel em: https://intranet.ctism.ufsm.br/lib-agendasub.tar.gz
+editar o arquivo src/java/hibernate.cfg.xml e adicionar username e password
+editar o arquivo src/java/ufsm/ctism/utils/Ldap.java e adicionar o ldapAddress e ldapAdminCredentials, possivelmente tenha que trocar o ldapPort e outros detalhes especificos 

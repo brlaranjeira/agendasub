@@ -1,0 +1,110 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Apr 29, 2015, 4:22:20 PM
+    Author     : SSI-Bruno
+*/
+/* line 11, ../scss/calendario.scss */
+.agendaItem {
+  border: 1px solid #000000;
+  padding: 3px;
+  background-color: #0099ff;
+  border-radius: 3px;
+  margin: 3px;
+  cursor: default;
+  overflow: hidden;
+  white-space: nowrap;
+}
+/* line 21, ../scss/calendario.scss */
+.agendaItem.sub {
+  background-color: #0099ff;
+}
+/* line 23, ../scss/calendario.scss */
+.agendaItem.sub:hover {
+  background-color: #00bbff;
+}
+/* line 27, ../scss/calendario.scss */
+.agendaItem.rec {
+  background-color: #00C999;
+}
+/* line 29, ../scss/calendario.scss */
+.agendaItem.rec:hover {
+  background-color: #00f099;
+}
+
+/* line 36, ../scss/calendario.scss */
+#table-calendario {
+  table-layout: fixed;
+  width: 100%;
+  border-spacing: 0;
+  margin-top: 30px;
+}
+/* line 41, ../scss/calendario.scss */
+#table-calendario td, #table-calendario th {
+  border-bottom: 1px solid #000;
+}
+/* line 43, ../scss/calendario.scss */
+#table-calendario td.loading, #table-calendario th.loading {
+  background-image: url("/solicita/img/loading.gif");
+  background-position: center;
+  background-repeat: no-repeat;
+}
+/* line 48, ../scss/calendario.scss */
+#table-calendario td:not(.td-horario), #table-calendario th:not(.td-horario) {
+  vertical-align: top;
+  width: auto;
+}
+/* line 52, ../scss/calendario.scss */
+#table-calendario td.td-horario, #table-calendario th.td-horario {
+  font-weight: bold;
+  width: 80px;
+}
+
+/* line 58, ../scss/calendario.scss */
+.solicita-calendario-tooltip {
+  font-size: small;
+  font-weight: bold;
+}
+
+/* line 62, ../scss/calendario.scss */
+#div-calendario-prevnext {
+  width: 240px;
+  height: 48px;
+  margin: auto;
+  margin-top: 40px;
+}
+/* line 67, ../scss/calendario.scss */
+#div-calendario-prevnext .div-calendario-btn {
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 24px;
+  height: 48px;
+  cursor: pointer;
+}
+/* line 73, ../scss/calendario.scss */
+#div-calendario-prevnext .div-calendario-btn#div-calendario-prev {
+  float: left;
+  background-image: url("/solicita/img/previous.png");
+}
+/* line 78, ../scss/calendario.scss */
+#div-calendario-prevnext .div-calendario-btn#div-calendario-next {
+  float: right;
+  background-image: url("/solicita/img/next.png");
+}
+/* line 84, ../scss/calendario.scss */
+#div-calendario-prevnext #div-calendario-prevnext-text {
+  float: left;
+  margin-left: 13px;
+  margin-top: 12px;
+  font-weight: bold;
+}
+
+/* line 92, ../scss/calendario.scss */
+input.data {
+  width: 100px;
+  line-height: 150%;
+  margin-top: 15px;
+}

@@ -1,0 +1,64 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Oct 1, 2014, 5:24:39 PM
+    Author     : SSI-Bruno
+*/
+
+#top{
+    $topSize: 130;
+    height: #{$topSize}px;
+    width: #{$topSize}px;
+    padding-bottom: 30px;
+
+    #ctismlogo {
+        width: #{$topSize - 3}px;
+        height: #{$topSize}px;
+        background-image: url("/solicita/img/ctismlogo.png");
+        background-size: cover;
+        background-repeat: no-repeat;
+        float: left;
+    }
+    #top-right {
+        padding-left: 40px;
+        #div-titulo {
+            width: 583px;
+            font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+            font-size: 300%;
+        }
+        #td-versao {
+            vertical-align: bottom;
+            min-width: 60px;
+        }
+    }
+}
+
+#barra-top {
+    $border: 1px solid black;
+    table {
+        /*border: $border;*/
+        border-collapse: separate;
+        width: 100%;
+        height: 35px;
+        table-layout: fixed;
+    }
+    td {
+/*        border-right: $border;
+        border-left: $border;*/
+        text-align: center;
+        font-weight: bold;
+        cursor: pointer;
+        background-color: #0099FF;
+        font-size: 1em;
+        font-variant-caps: small-caps;
+        transition: 0.6s;
+        &:hover {
+            background-color: #00BBFF;
+            border: 1px solid white;
+            font-size: 1.03em;
+        }
+    }
+}

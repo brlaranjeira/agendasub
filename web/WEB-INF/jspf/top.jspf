@@ -1,0 +1,38 @@
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="jwr" uri="http://jawr.net/tags" %>
+<div id="top">
+    <table><tr>
+        <td><div id="ctismlogo"></div></td>
+        <td id="top-right">
+            <table><tr>
+                    <td><div id="div-titulo"><fmt:message key="main.titulo"/></div></td>
+                    <td id="td-versao"><fmt:message key="main.versao"/></td>
+                </tr></table>
+            <div id="div-welcome">
+                <fmt:message key="main.bemvindo"/> <strong>${user.nome}</strong> (<a href="logout.htm"><fmt:message key="main.sair"/></a>)
+            </div>
+        </td>
+    </tr></table>
+</div>
+<div id="barra-top">
+    <table><tr>
+        <c:if test="${isProf}">
+            <td val="form.htm"><fmt:message key="menu.nova"/></td>
+            <td val="minhas.htm"><fmt:message key="menu.minhas"/></td>
+        </c:if>
+        <c:if test="${isProf or isEstagiario}">
+            <td val="paramim.htm"><fmt:message key="menu.paramim"/><span class="span-count" val="paramim"></span></td>
+        </c:if>
+        <c:if test="${isSsi or isDepEd}">
+            <td val="deferir.htm"><fmt:message key="menu.deferir"/><span class="span-count" val="deferir"></span></td>
+        </c:if>
+        <c:if test="${isSsi or isDepEd or isProf}">
+            <td val="relatorios.htm"><fmt:message key="menu.relatorios"/></td>
+        </c:if>
+        <c:if test="${isSsi or isDepEd}">
+            <td val="calendario.htm"><fmt:message key="menu.calendario"/></td>
+        </c:if>
+    </tr></table>
+</div>
+<jwr:script src="/bundles/top.js"/>

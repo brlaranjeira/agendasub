@@ -1,0 +1,34 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Apr 9, 2015, 10:35:15 AM
+    Author     : SSI-Bruno
+*/
+/* line 11, ../scss/error.scss */
+#forbidden-message {
+  font-size: 15px;
+}
+
+/* line 15, ../scss/error.scss */
+#div404 {
+  background-image: url("/solicita/img/error404.png");
+  width: 50%;
+  height: 0;
+  background-repeat: no-repeat;
+  background-size: contain;
+  padding-top: 66.64%;
+  margin: 0 auto;
+}
+
+/* line 25, ../scss/error.scss */
+#divForbidden {
+  background-image: url("/solicita/img/forbidden.png");
+  width: 200px;
+  height: 200px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  /*padding-top: 66.64%;*/
+}

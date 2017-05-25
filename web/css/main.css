@@ -1,0 +1,58 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Oct 2, 2014, 1:28:13 PM
+    Author     : SSI-Bruno
+*/
+/* line 12, ../scss/main.scss */
+.ui-datepicker {
+  font-size: 12px;
+}
+
+/* line 16, ../scss/main.scss */
+body {
+  background-color: #E2F3FF;
+}
+
+/* line 20, ../scss/main.scss */
+.zebra {
+  background-color: #AACCDD;
+}
+
+/* line 24, ../scss/main.scss */
+#div-error-msg {
+  color: #ff0000;
+  font-weight: bold;
+}
+
+/* line 29, ../scss/main.scss */
+.hidden {
+  visibility: hidden;
+  height: 0px;
+}
+
+/* line 34, ../scss/main.scss */
+.botoesTable {
+  border-spacing: 10px;
+}
+/* line 36, ../scss/main.scss */
+.botoesTable button {
+  background-position: 5px center;
+  background-repeat: no-repeat;
+  background-size: 15px 15px;
+  width: 80px;
+  height: 20px;
+  text-align: right;
+}
+/* line 43, ../scss/main.scss */
+.botoesTable button.btAceita {
+  background-image: url("/solicita/img/vcheck.png");
+}
+/* line 46, ../scss/main.scss */
+.botoesTable button.btRecusa {
+  background-image: url("/solicita/img/xnot.png");
+  width: 90px;
+}

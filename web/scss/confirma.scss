@@ -1,0 +1,30 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Sep 29, 2014, 11:27:03 AM
+    Author     : SSI-Bruno
+*/
+
+button {
+    cursor: pointer;
+    /*    position: relative;
+        top: 40px;
+        left:40px;*/
+}
+
+#div-confirma {
+    $padding: 30;
+    padding-left: #{$padding}px;
+    padding-top: #{$padding}px;
+}
+
+#aviso-sie {
+    color: red;
+    font-weight: bold;
+    font-size: 125%;
+    font-variant: small-caps;
+    margin-bottom: 20px;
+}

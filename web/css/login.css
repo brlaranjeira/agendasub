@@ -1,0 +1,35 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Oct 24, 2014, 5:30:35 PM
+    Author     : SSI-Bruno
+*/
+/* line 12, ../scss/login.scss */
+#ctismlogo-login {
+  width: 100%;
+  height: 130px;
+  position: absolute;
+  background-image: url("/solicita/img/ctismlogo.png");
+  background-size: 127px 130px;
+  background-repeat: no-repeat;
+  background-position: center;
+  top: 20px;
+}
+
+/* line 23, ../scss/login.scss */
+#div-login {
+  position: absolute;
+  width: 100%;
+  height: 200px;
+  text-align: center;
+  top: 180px;
+}
+
+/* line 31, ../scss/login.scss */
+#div-logout {
+  padding-top: 30px;
+  padding-left: 30px;
+}

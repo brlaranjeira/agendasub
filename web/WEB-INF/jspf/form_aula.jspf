@@ -1,0 +1,72 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<fieldset class="aula" cod="field-aula" num="${i.index + 1}"> <legend>Aula ${i.index + 1}</legend>
+    <div class="removeAula"></div>
+    <div class="removeAulaContent">
+        <fmt:message key="form.aula.disciplina"/>:
+        <select name="componente">
+            <c:forEach items="${componentes}" var="componente">
+                <option value="${componente.id}"
+                        <c:if test="${componente.id eq session_componentes[i.index]}">
+                            selected="selected"
+                        </c:if>
+                        > ${componente.nome} </option>
+            </c:forEach>
+        </select>
+        <br/>
+        <fmt:message key="form.aula.substituto"/>:
+        <input type="checkbox" name="isEstagiario" class="isEstagiario" autocomplete="off">
+            <fmt:message key="form.aula.estagiario"/>
+        </input>
+        <select name="professor">
+            <c:forEach items="${professores}" var="professor">
+                <option value="${professor.ldap}"
+                        <c:if test="${professor.ldap eq session_professores[i.index]}">
+                            selected="selected"
+                        </c:if>
+                        > ${professor.nome}
+                </option>
+            </c:forEach>
+        </select>
+        <br/>
+        <fmt:message key="form.aula.dataaula"/>: Dia
+        <input class="data" name="dtaula"
+               <c:if test="${not empty session_datas and not empty session_datas[i.index]}">
+                   <fmt:formatDate value="${session_datas[i.index]}" var="sess_data" pattern="dd/MM/yyyy" />
+               value="${sess_data}"
+        </c:if>
+        />
+
+        <c:set var="sess_hora" value="8"/>
+        <c:if test="${not empty session_horas and not empty session_horas[i.index]}">
+            <c:set var="sess_hora" value="${session_horas[i.index]}" />
+        </c:if>
+        Hora: <input class="hora" name="horaaula" type="number" min="0" max="23" value="${sess_hora}"/>h
+
+
+        <c:set var="sess_min" value="30"/>
+        <c:if test="${not empty session_minutos and not empty session_minutos[i.index]}">
+            <c:set var="sess_minuto" value="${session_minutos[i.index]}" />
+        </c:if>
+        <input class="hora" name="minaula" type="number" min="0" max="59" step="5" value="${sess_min}"/>min<br/>
+
+        <fmt:message key="form.aula.datarec"/> Dia
+        <input class="data" name="dtrecupera"
+               <c:if test="${not empty session_rec_datas and not empty session_rec_datas[i.index]}">
+                   <fmt:formatDate value="${session_rec_datas[i.index]}" var="sess_rec_data" pattern="dd/MM/yyyy" />
+               value="${sess_rec_data}"
+        </c:if>
+        />
+
+        <c:set var="sess_rec_hora" value="8"/>
+        <c:if test="${not empty session_rec_horas and not empty session_rec_horas[i.index]}">
+            <c:set var="sess_rec_hora" value="${session_rec_horas[i.index]}" />
+        </c:if>
+        Hora: <input class="hora" name="horarecupera" type="number" min="0" max="23" value="${sess_rec_hora}"/>h
+
+        <c:set var="sess_rec_min" value="30"/>
+        <c:if test="${not empty session_rec_minutos and not empty session_rec_minutos[i.index]}">
+            <c:set var="sess_minuto" value="${session_rec_minutos[i.index]}" />
+        </c:if>
+        <input class="hora" name="minrecupera" type="number" min="0" max="59" step="5" value="${sess_rec_min}"/>min<br/>
+    </div>
+</fieldset>

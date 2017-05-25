@@ -1,0 +1,96 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Apr 29, 2015, 4:22:20 PM
+    Author     : SSI-Bruno
+*/
+
+.agendaItem {
+    border: 1px solid #000000;
+    $tam: 3;
+    padding: #{$tam}px;
+    background-color: #0099ff;
+    border-radius: #{$tam}px;
+    margin: #{$tam}px;
+    cursor: default;
+    overflow: hidden;
+    white-space: nowrap;
+    &.sub {
+        background-color: #0099ff;
+        &:hover {
+            background-color: #00BBFF
+        }
+    }
+    &.rec {
+        background-color: #00C999;
+        &:hover {
+            background-color: #00F099
+        }
+    }
+
+}
+
+#table-calendario {
+    table-layout: fixed;
+    width: 100%;
+    border-spacing:0;
+    margin-top:30px;
+    td,th{
+        border-bottom: 1px solid #000;
+        &.loading {
+            background-image: url('/solicita/img/loading.gif');
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        &:not(.td-horario) {
+            vertical-align:top;
+            width: auto;
+        }
+        &.td-horario {
+            font-weight: bold;
+            width: 80px;
+        }
+    }
+}
+.solicita-calendario-tooltip {
+    font-size: small;
+    font-weight: bold;
+}
+#div-calendario-prevnext {
+    width: 240px;
+    height: 48px;
+    margin: auto;
+    margin-top: 40px;
+    .div-calendario-btn {
+        background-repeat: no-repeat;
+        background-position: center;
+        width: 24px;
+        height: 48px;
+        cursor: pointer;
+        &#div-calendario-prev {
+            float: left;
+            background-image: url('/solicita/img/previous.png');
+
+        }
+        &#div-calendario-next {
+            float: right;
+            background-image: url('/solicita/img/next.png');
+        }
+
+    }
+    #div-calendario-prevnext-text {
+        float: left;
+        margin-left: 13px;
+        margin-top: 12px;
+        font-weight: bold;
+    }
+}
+
+input.data {
+    width: 100px;
+    line-height: 150%;
+    margin-top: 15px;
+}

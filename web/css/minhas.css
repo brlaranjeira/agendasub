@@ -1,0 +1,54 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Oct 1, 2014, 5:01:01 PM
+    Author     : SSI-Bruno
+*/
+/* line 11, ../scss/minhas.scss */
+.solicitacao {
+  background-color: #E2F3FF;
+  padding-left: 60px;
+  padding-bottom: 1px;
+}
+/* line 15, ../scss/minhas.scss */
+.solicitacao.zebra {
+  background-color: #AACCDD;
+}
+
+/* line 20, ../scss/minhas.scss */
+#label-radio-filtro {
+  font-weight: bold;
+}
+
+/* line 24, ../scss/minhas.scss */
+#div-radio-tipo {
+  padding-top: 25px;
+  padding-left: 25px;
+  padding-bottom: 25px;
+}
+
+/* line 31, ../scss/minhas.scss */
+.cancelaAula {
+  /*width: 25px;*/
+  width: auto;
+  height: 25px;
+  background-image: url("/solicita/img/remove.png");
+  background-repeat: no-repeat;
+  background-size: 25px 25px;
+  background-position: center;
+  cursor: pointer;
+}
+
+/* line 43, ../scss/minhas.scss */
+.tdCancelaAula {
+  position: relative;
+  right: 20px;
+}
+
+/* line 49, ../scss/minhas.scss */
+.minhaSolicitacaoTable {
+  table-layout: fixed;
+}

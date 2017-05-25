@@ -1,0 +1,51 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Oct 1, 2014, 5:01:01 PM
+    Author     : SSI-Bruno
+*/
+
+.solicitacao {
+    background-color: #E2F3FF;
+    padding-left: 60px;
+    padding-bottom: 1px;
+    &.zebra {
+        background-color: #AACCDD;
+    }
+}
+
+#label-radio-filtro {
+    font-weight: bold;
+}
+
+#div-radio-tipo {
+    $padding: 25;
+    padding-top: #{$padding}px;
+    padding-left: #{$padding}px;
+    padding-bottom: #{$padding}px;
+}
+
+.cancelaAula {
+    $imgSize: 25;
+    /*width: #{$imgSize}px;*/
+    width: auto;
+    height: #{$imgSize}px;
+    background-image: url("/solicita/img/remove.png");
+    background-repeat: no-repeat;
+    background-size: #{$imgSize}px #{$imgSize}px;
+    background-position: center;
+    cursor: pointer;
+}
+
+.tdCancelaAula {
+    $offset: 20;
+    position: relative;
+    right: #{$offset}px;
+}
+
+.minhaSolicitacaoTable {
+    table-layout: fixed;
+}

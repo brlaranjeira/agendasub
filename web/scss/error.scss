@@ -1,0 +1,33 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Apr 9, 2015, 10:35:15 AM
+    Author     : SSI-Bruno
+*/
+
+#forbidden-message {
+    font-size: 15px;
+}
+
+#div404 {
+    background-image: url('/solicita/img/error404.png');
+    width: 50%;
+    height: 0;
+    background-repeat: no-repeat;
+    background-size: contain;
+    padding-top: 66.64%;
+    margin: 0 auto;
+}
+
+#divForbidden {
+    $forbidden-img-size: 200;
+    background-image: url('/solicita/img/forbidden.png');
+    width: #{$forbidden-img-size}px;
+    height: #{$forbidden-img-size}px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    /*padding-top: 66.64%;*/
+}

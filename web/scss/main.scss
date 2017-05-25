@@ -1,0 +1,51 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Oct 2, 2014, 1:28:13 PM
+    Author     : SSI-Bruno
+*/
+
+
+.ui-datepicker {
+    font-size: 12px;
+}
+
+body {
+    background-color: #E2F3FF;
+}
+
+.zebra {
+  background-color: #AACCDD;
+}
+
+#div-error-msg {
+    color: #ff0000;
+    font-weight: bold;
+}
+
+.hidden{
+    visibility: hidden;
+    height: 0px;
+}
+
+.botoesTable {
+    border-spacing: 10px;
+    button {
+        background-position: 5px center;
+        background-repeat: no-repeat;
+        background-size: 15px 15px;
+        width: 80px;
+        height: 20px;
+        text-align: right;
+        &.btAceita {
+            background-image: url('/solicita/img/vcheck.png');
+        }
+        &.btRecusa {
+            background-image: url('/solicita/img/xnot.png');
+            width: 90px;
+        }
+    }
+}

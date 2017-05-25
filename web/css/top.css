@@ -1,0 +1,66 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Oct 1, 2014, 5:24:39 PM
+    Author     : SSI-Bruno
+*/
+/* line 11, ../scss/top.scss */
+#top {
+  height: 130px;
+  width: 130px;
+  padding-bottom: 30px;
+}
+/* line 17, ../scss/top.scss */
+#top #ctismlogo {
+  width: 127px;
+  height: 130px;
+  background-image: url("/solicita/img/ctismlogo.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  float: left;
+}
+/* line 25, ../scss/top.scss */
+#top #top-right {
+  padding-left: 40px;
+}
+/* line 27, ../scss/top.scss */
+#top #top-right #div-titulo {
+  width: 583px;
+  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+  font-size: 300%;
+}
+/* line 32, ../scss/top.scss */
+#top #top-right #td-versao {
+  vertical-align: bottom;
+  min-width: 60px;
+}
+
+/* line 41, ../scss/top.scss */
+#barra-top table {
+  /*border: $border;*/
+  border-collapse: separate;
+  width: 100%;
+  height: 35px;
+  table-layout: fixed;
+}
+/* line 48, ../scss/top.scss */
+#barra-top td {
+  /*        border-right: $border;
+          border-left: $border;*/
+  text-align: center;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: #0099FF;
+  font-size: 1em;
+  font-variant-caps: small-caps;
+  transition: 0.6s;
+}
+/* line 58, ../scss/top.scss */
+#barra-top td:hover {
+  background-color: #00BBFF;
+  border: 1px solid white;
+  font-size: 1.03em;
+}

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+      
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+        
+        <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+        <!--<property name="hibernate.connection.driver_class">com.p6spy.engine.spy.P6SpyDriver</property>-->
+        
+        <!--<property name="hibernate.connection.url">jdbc:p6spy:mysql://bdctism.intranet.ctism.ufsm.br:3306/agendasub</property>-->
+        <property name="hibernate.connection.url">jdbc:mysql://bdctism.intranet.ctism.ufsm.br:3306/agendasub</property>
+        <property name="hibernate.connection.username"></property>
+        <property name="hibernate.connection.password"></property>
+        <property name="show_sql">false</property> 
+        <property name="format_sql">false</property>
+    <property name="use_sql_comments">false</property>
+    
+    <mapping class="ufsm.ctism.dao.Componente"/> 
+    <mapping class="ufsm.ctism.dao.MotivoAfastamento"/> 
+    <!--<mapping class="ufsm.ctism.dao.Professor"/>--> 
+    <mapping class="ufsm.ctism.dao.Solicitacao"/> 
+    <mapping class="ufsm.ctism.dao.AulaSolicitada"/> 
+    <mapping class="ufsm.ctism.dao.Situacao"/> 
+    <!--<mapping class="ufsm.ctism.dao.GrupoUsuarios"/>--> 
+     
+    </session-factory>
+</hibernate-configuration>

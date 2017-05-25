@@ -1,0 +1,37 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Oct 10, 2014, 9:49:21 AM
+    Author     : SSI-Bruno
+*/
+/* line 11, ../scss/relatorios.scss */
+#form-relatorio {
+  line-height: 200%;
+  padding-left: 50px;
+  padding-top: 30px;
+}
+/* line 12, ../scss/relatorios.scss */
+#form-relatorio #div-error-msg {
+  line-height: initial;
+}
+/* line 18, ../scss/relatorios.scss */
+#form-relatorio .tabbed-div {
+  position: relative;
+  left: 20px;
+}
+/* line 22, ../scss/relatorios.scss */
+#form-relatorio .report-title {
+  font-weight: bold;
+}
+/* line 25, ../scss/relatorios.scss */
+#form-relatorio .data, #form-relatorio .hora {
+  width: 80px;
+}
+
+/* line 29, ../scss/relatorios.scss */
+.ui-datepicker {
+  font-size: 12px;
+}
