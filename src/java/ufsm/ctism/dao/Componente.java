@@ -7,9 +7,13 @@
 package ufsm.ctism.dao;
 
 import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.Collection;
+import java.util.Map;
 import java.util.Objects;
 import javax.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
+import ufsm.ctism.utils.JDBCUtils;
 
 /**
  * Classe correspondente à tabela ctism_componente
@@ -18,6 +22,23 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 @Table(name = "CTISM_COMPONENTE")
 public class Componente implements Serializable {
+
+    public static Componente getById(Integer id) {
+        Collection<Object> param = new java.util.LinkedHashSet<>();
+        param.add(id);
+        try {
+            Collection<Map<String,Object>> col = JDBCUtils.query("SELECT nome FROM ctism_componente WHERE idcomponente = ?", param);
+            for (Map<String,Object> line : col) {
+                Componente ret = new Componente();
+                ret.setNome(line.get("nome").toString());
+                ret.setId(id);
+                return ret;
+            }
+            return null;
+        }catch (SQLException ex) {
+            return null;
+        }
+    }
     
     @Id
     @GeneratedValue(generator="componenteincrement")

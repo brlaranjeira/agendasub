@@ -5,12 +5,14 @@
  */
 package ufsm.ctism.service;
 
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import javax.naming.NamingException;
 import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
@@ -27,6 +29,7 @@ import ufsm.ctism.dao.AulaSolicitada;
 import ufsm.ctism.dao.Situacao;
 import ufsm.ctism.dao.Usuario;
 import ufsm.ctism.utils.HibernateUtils;
+import ufsm.ctism.utils.JDBCUtils;
 
 /**
  *
@@ -42,7 +45,18 @@ public class AulaSolicitadaServiceImpl implements AulaSolicitadaService {
     
     @Override
     public Collection<AulaSolicitada> getAllBySubstituto(String ldap) {
-        org.hibernate.StatelessSession dbSession = HibernateUtils.getInstance().getStatelessSession();
+        try {
+            String sql = "SELECT * FROM ctism_solicita_aula_solicitada WHERE id_prof_substituto = ? ORDER BY dt_aula DESC";
+            Collection params = Arrays.asList(ldap);
+            Collection<Map<String,Object>> aulas = JDBCUtils.query( sql , params );
+            Collection<AulaSolicitada> ret = new java.util.LinkedHashSet<>();
+            for (Map<String, Object> aula : aulas) {
+                ret.add(new AulaSolicitada(aula));
+            }
+        }catch (SQLException ex) {
+            return null;
+        }
+        /*org.hibernate.StatelessSession dbSession = HibernateUtils.getInstance().getStatelessSession();
         Collection<AulaSolicitada> ret = dbSession.createCriteria(AulaSolicitada.class,"aula")
                 .add(Restrictions.eq("profSubstituto", ldap))
                 .addOrder(Order.desc("aula.dataAula"))
@@ -54,18 +68,8 @@ public class AulaSolicitadaServiceImpl implements AulaSolicitadaService {
                 aula.setProfSubstituto(usuarioService.getByLdap(aula.getProfSubstitutoLdap()));
             } catch (NamingException skip) {}
         });
-        return ret;
+        return ret;*/
     }
-
-//    @Override
-//    public Collection<Integer> getAllIds() {
-//        Session dbSession = HibernateUtils.getInstance().getSession();
-//        Collection<Integer> ret = dbSession.createCriteria(AulaSolicitada.class)
-//                .setProjection(Projections.id())
-//                .list();
-//        dbSession.close();
-//        return ret;
-//    }
 
     @Override
     public Collection<AulaSolicitada> getAll() {

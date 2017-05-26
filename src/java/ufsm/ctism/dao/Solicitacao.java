@@ -6,7 +6,9 @@
 package ufsm.ctism.dao;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Column;
@@ -21,6 +23,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
 import org.hibernate.annotations.GenericGenerator;
+import ufsm.ctism.utils.JDBCUtils;
 
 /**
  * Classe correspondente à tabela solicita_solicitação.
@@ -30,6 +33,31 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 @Table(name = "CTISM_SOLICITA_SOLICITACAO")
 public class Solicitacao implements Serializable {
+
+    static Solicitacao getById(Integer id) {
+        Collection<Object> param = new java.util.LinkedHashSet<>();
+        param.add(id);
+        java.text.SimpleDateFormat dateformat = new java.text.SimpleDateFormat("yyyy-MM-dd ");
+        java.text.SimpleDateFormat datetimeformat = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            Collection<Map<String,Object>> col = JDBCUtils.query("SELECT id_professor, datainicio, datafim, outro_motivo, data_solicitacao FROM ctism_solicita_solicitacao WHERE id = ?", param);
+            for (Map<String,Object> line : col) {
+                Solicitacao ret = new Solicitacao();
+                ret.setProfessorLdap(line.get("id_professor").toString());
+                ret.setProfessor(Usuario.getByLDAP(ret.getProfessorLdap()));
+                ret.setDatainicio(dateformat.parse(line.get("datainicio").toString()));
+                ret.setDatafim(dateformat.parse(line.get("datafim").toString()));
+                Object outro = line.get("outro_motivo");
+                ret.setOutroMotivo(outro != null ? outro.toString() : null);
+                ret.setDataSolicitacao(datetimeformat.parse(line.get("data_solicitacao").toString()));
+                ret.setId(id);
+                return ret;
+            }
+            return null;
+        }catch (java.sql.SQLException | java.text.ParseException ex) {
+            return null;
+        }
+    }
     
     @Id
     @GeneratedValue(generator = "solicitacaogenerator")

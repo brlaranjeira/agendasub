@@ -6,6 +6,8 @@
 package ufsm.ctism.dao;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.Map;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,6 +15,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
+import ufsm.ctism.utils.JDBCUtils;
 
 /**
  * Classe correspondente à tabela solicita_situacao
@@ -28,6 +31,23 @@ public class Situacao implements Serializable {
     public static final Integer SITUACAO_NEGADA = 3;
     public static final Integer SITUACAO_DEFERIDA = 4;
     public static final Integer SITUACAO_INDEFERIDA = 5;
+
+    static Situacao getById(Integer id) {
+        Collection<Object> param = new java.util.LinkedHashSet<>();
+        param.add(id);
+        try {
+            Collection<Map<String,Object>> col = JDBCUtils.query("SELECT descricao FROM ctism_solicita_situacao WHERE id = ?", param);
+            for (Map<String,Object> line : col) {
+                Situacao ret = new Situacao();
+                ret.setDescricao(line.get("descricao").toString());
+                ret.setId(id);
+                return ret;
+            }
+            return null;
+        }catch (java.sql.SQLException ex) {
+            return null;
+        }
+    }
     
     @Id
     @GeneratedValue(generator = "situacaogenerator")

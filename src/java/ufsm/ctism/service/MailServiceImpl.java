@@ -10,23 +10,17 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.stream.Collectors;
 import javax.mail.Message;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import org.hibernate.Session;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Service;
 import ufsm.ctism.dao.AulaSolicitada;
 import ufsm.ctism.dao.Situacao;
-import ufsm.ctism.dao.Usuario;
 import ufsm.ctism.utils.HibernateUtils;
+import ufsm.ctism.utils.JDBCUtils;
 
 /**
  *
@@ -54,44 +48,13 @@ public class MailServiceImpl implements MailService {
     @Override
     public Collection<Map<String, Object>> getAulasSolicitadasForMail() {
         try {
-            org.hibernate.StatelessSession dbSession = HibernateUtils.getInstance().getStatelessSession();
-            Collection<Situacao> situacoesSubstituto = Arrays.asList(
-                    new Situacao(Situacao.SITUACAO_SOLICITADA),
-                    new Situacao(Situacao.SITUACAO_DEFERIDA),
-                    new Situacao(Situacao.SITUACAO_INDEFERIDA)
-            );
-            
-            Collection<Map<String,Object>> list;
-            
-            list = dbSession.createCriteria(AulaSolicitada.class, "aula")
-                    .createAlias("aula.situacao", "situacao")
-                    .createAlias("aula.solicitacao", "solicitacao")
-                    .createAlias("aula.componente", "componente")
-                    .setProjection(Projections.projectionList()
-                        .add(Projections.property("situacao.id"),"SITUACAO_ID")
-                        .add(Projections.property("situacao.descricao"),"SITUACAO_DESCRICAO")
-                        .add(Projections.property("aula.id"),"AULA_ID")
-                        .add(Projections.property("aula.dataAula"),"DATA_AULA")
-                        .add(Projections.property("aula.dataRecuperacao"),"DATA_RECUPERACAO")
-                        .add(Projections.property("componente.nome"),"COMPONENTE")
-//                        .add(Projections.count("situacao.id"),"NUM_AULAS")
-                        .add(Projections.property("aula.profSubstitutoLdap"),"LDAP_SUBSTITUTO")
-                        .add(Projections.property("solicitacao.professorLdap"),"LDAP_SOLICITANTE")
-                        .add(Projections.property("aula.mailEnviado"),"MAIL_ENVIADO")
-//                        .add(Projections.groupProperty("aula.profSubstitutoLdap"))
-//                        .add(Projections.groupProperty("situacao.id"))
-                    )
-                    .add(Restrictions.ne("aula.mailEnviado", new Integer(AulaSolicitada.AVISO_SUBSTITUTO | AulaSolicitada.AVISO_SOLICITANTE | AulaSolicitada.AVISO_DEPTO ) ))
-                    .setResultTransformer(org.hibernate.Criteria.ALIAS_TO_ENTITY_MAP)
-                    .addOrder(Order.asc("situacao.id"))
-                    .list();
-            
-
-            dbSession.close();
+            String sql = "SELECT sit.id AS SITUACAO_ID, sit.descricao AS SITUACAO_DESCRICAO, aula.id AS AULA_ID, aula.dt_aula AS DATA_AULA, aula.dt_recuperacao AS DATA_RECUPERACAO, comp.nome AS COMPONENTE, aula.id_prof_substituto AS LDAP_SUBSTITUTO, sol.id_professor AS LDAP_SOLICITANTE, aula.mail_enviado AS MAIL_ENVIADO FROM CTISM_SOLICITA_AULA_SOLICITADA aula INNER JOIN CTISM_COMPONENTE comp ON aula.id_componente = comp.idcomponente INNER JOIN CTISM_SOLICITA_SITUACAO sit ON aula.id_situacao = sit.id INNER JOIN CTISM_SOLICITA_SOLICITACAO sol ON aula.id_solicitacao = sol.id WHERE aula.mail_enviado <> ? ORDER BY sit.id ASC";
+            Collection<Object> al = new ArrayList<>();
+            al.add( AulaSolicitada.AVISO_SUBSTITUTO | AulaSolicitada.AVISO_SOLICITANTE | AulaSolicitada.AVISO_DEPTO );
+            Collection<Map<String,Object>> list = JDBCUtils.query(sql, al);
             return list;
         } catch (Throwable ex) {
             ex.printStackTrace();
-            System.out.println("aa");
             return new LinkedHashSet<>();
         }
     }

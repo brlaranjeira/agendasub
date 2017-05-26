@@ -8,6 +8,9 @@ package ufsm.ctism.dao;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.naming.ServiceUnavailableException;
 import javax.persistence.*;
 
 /**
@@ -38,10 +41,14 @@ public class Usuario implements Serializable {
         this.mail = mail;
     }
     
-    
-
-    
-    
+    public static Usuario getByLDAP( String ldap ) {
+        try {
+            String[] cnmail = ufsm.ctism.utils.Ldap.getInstance().getCNAndMail(ldap);
+            return new Usuario (ldap, cnmail[0], cnmail[1] );
+        } catch (ServiceUnavailableException ex) {
+            return null;
+        }
+    }
     
     /**
      * 

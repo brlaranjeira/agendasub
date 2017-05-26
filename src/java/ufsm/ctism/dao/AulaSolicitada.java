@@ -6,8 +6,12 @@
 package ufsm.ctism.dao;
 
 import java.io.Serializable;
+import java.sql.SQLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Map;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,6 +24,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import org.hibernate.annotations.GenericGenerator;
+import ufsm.ctism.utils.JDBCUtils;
 
 /**
  * Classe correspondente à tabela solicita_aula_solicitada
@@ -69,6 +74,42 @@ public class AulaSolicitada implements Serializable {
     
     public AulaSolicitada(){}
 
+    public static AulaSolicitada getById(Integer id) {
+        try {
+            String sql = "SELECT * FROM ctism_solicita_aula_solicitada WHERE id = ?";
+            Collection<Object> params = new java.util.LinkedHashSet<>();
+            params.add(id);
+            Collection<Map<String,Object>> col = JDBCUtils.query(sql,params);
+            if (!col.iterator().hasNext()) {
+                return null;
+            }
+            return new AulaSolicitada(col.iterator().next());
+        }catch (SQLException ex) {
+            return null;
+        }
+    }
+    
+    public AulaSolicitada( Map<String,Object> fromSQL ) {
+        java.text.SimpleDateFormat dateformat = new java.text.SimpleDateFormat("yyyy-MM-dd ");
+        this.id = (int) fromSQL.get("id");
+        this.profSubstitutoLdap = fromSQL.get("id_prof_substituto").toString();
+        this.profSubstituto = Usuario.getByLDAP(profSubstitutoLdap);
+        this.componente = Componente.getById((int)fromSQL.get("id_componente"));
+        this.situacao = Situacao.getById((int)fromSQL.get("id_situacao"));
+        this.solicitacao = Solicitacao.getById((int)fromSQL.get("id_solicitacao"));
+        try {
+            this.dataAula = dateformat.parse(fromSQL.get("dt_aula").toString());
+        } catch (ParseException ex) {
+            this.dataAula = null;
+        }
+        try {
+            this.dataRecuperacao = dateformat.parse(fromSQL.get("dt_recuperacao").toString());
+        }catch (ParseException ex) {
+            this.dataRecuperacao = null;
+        }
+        this.mailEnviado = (int) fromSQL.get("mail_enviado");
+    }
+    
     /**
      * 
      * @return id da linha na tabela

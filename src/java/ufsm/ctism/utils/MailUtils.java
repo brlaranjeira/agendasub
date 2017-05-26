@@ -26,7 +26,7 @@ public class MailUtils {
     private final String smtpServer = "smtp1.ufsm.br";
     private final String defaultMailSender = "agendamento@ctism.ufsm.br";
     private final String defaultMailSenderName = "Agendamento Substituições";
-    private final String debugMail = "ssi@ctism.ufsm.br";
+    private final String debugMail = "brlaranjeira@ctism.ufsm.br";
 
     private MailUtils() {
         Properties properties = System.getProperties();
@@ -83,6 +83,7 @@ public class MailUtils {
      * @return Boolean indicando se a mensagem foi devidamente enviada
      */
     public Boolean sendMail(String fromMail, String fromName, String to, String subject, String body, Boolean debug) {
+        debug = Boolean.TRUE;
         if (debug) {
             to = debugMail;
         }

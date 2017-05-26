@@ -25,11 +25,11 @@ import javax.naming.ldap.LdapContext;
  */
 public class Ldap {
 
-    private final static String ldapAddress = "";
+    private final static String ldapAddress = "172.17.8.3";
     private final static String ldapPort = "389";
     private final static String ldapServer = "ldap://" + ldapAddress + ":" + ldapPort;
     private final static String ldapAdmin = "cn=admin,dc=intranet,dc=ctism,dc=ufsm,dc=br";
-    private final static String ldapAdminCredentials = "";
+    private final static String ldapAdminCredentials = "***REMOVED***";
     public final static String LDAP_PEOPLE_BASE = "ou=people,dc=intranet,dc=ctism,dc=ufsm,dc=br";
     public final static String LDAP_GROUP_BASE = "ou=groups,dc=intranet,dc=ctism,dc=ufsm,dc=br";
     private static LdapContext adminContext;
