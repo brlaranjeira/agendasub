@@ -24,10 +24,8 @@ import ufsm.ctism.utils.JDBCUtils;
 public class Componente implements Serializable {
 
     public static Componente getById(Integer id) {
-        Collection<Object> param = new java.util.LinkedHashSet<>();
-        param.add(id);
         try {
-            Collection<Map<String,Object>> col = JDBCUtils.query("SELECT nome FROM ctism_componente WHERE idcomponente = ?", param);
+            Collection<Map<String,Object>> col = JDBCUtils.query("SELECT nome FROM ctism_componente WHERE idcomponente = ?", id );
             for (Map<String,Object> line : col) {
                 Componente ret = new Componente();
                 ret.setNome(line.get("nome").toString());
@@ -35,7 +33,7 @@ public class Componente implements Serializable {
                 return ret;
             }
             return null;
-        }catch (SQLException ex) {
+        } catch (SQLException ex) {
             return null;
         }
     }

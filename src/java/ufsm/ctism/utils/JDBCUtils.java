@@ -51,11 +51,20 @@ public class JDBCUtils {
         return ps;
     }
     
-    public static Collection<Map<String,Object>> query( String sql ) throws SQLException {
-        return query(sql,new LinkedHashSet<>());
+//    public static Collection<Map<String,Object>> query( String sql ) throws SQLException {
+//        return query(sql,new LinkedHashSet<>());
+//    }
+    
+    
+    public static Collection<Map<String,Object>> query( String sql, Object... params ) throws SQLException {
+        Collection<Object> paramsCol = new LinkedHashSet<>();
+        for (Object param : params) {
+            paramsCol.add(param);
+        }
+        return query(sql,paramsCol);
     }
     
-    public static Collection<Map<String,Object>> query(String sql, Collection<Object> params) throws SQLException {
+    private static Collection<Map<String,Object>> query(String sql, Collection<Object> params) throws SQLException {
         Connection conn = JDBCUtils.getConnection();
         PreparedStatement ps = JDBCUtils.getPreparedStatement(conn, sql, params);
         ResultSet rs = ps.executeQuery();

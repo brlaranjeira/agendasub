@@ -13,6 +13,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.naming.NamingException;
 import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
@@ -47,12 +49,12 @@ public class AulaSolicitadaServiceImpl implements AulaSolicitadaService {
     public Collection<AulaSolicitada> getAllBySubstituto(String ldap) {
         try {
             String sql = "SELECT * FROM ctism_solicita_aula_solicitada WHERE id_prof_substituto = ? ORDER BY dt_aula DESC";
-            Collection params = Arrays.asList(ldap);
-            Collection<Map<String,Object>> aulas = JDBCUtils.query( sql , params );
+            Collection<Map<String,Object>> aulas = JDBCUtils.query( sql , ldap );
             Collection<AulaSolicitada> ret = new java.util.LinkedHashSet<>();
             for (Map<String, Object> aula : aulas) {
                 ret.add(new AulaSolicitada(aula));
             }
+            return ret;
         }catch (SQLException ex) {
             return null;
         }
@@ -73,39 +75,44 @@ public class AulaSolicitadaServiceImpl implements AulaSolicitadaService {
 
     @Override
     public Collection<AulaSolicitada> getAll() {
-        org.hibernate.StatelessSession dbSession = HibernateUtils.getInstance().getStatelessSession();
-        Collection<AulaSolicitada> ret = dbSession.createCriteria(AulaSolicitada.class)
-                .setCacheable(false)
-                .list();
-        dbSession.close();
-        ret.forEach((AulaSolicitada aula) -> {
-            try {
-                aula.setProfSubstituto(usuarioService.getByLdap(aula.getProfSubstitutoLdap()));
-            } catch (NullPointerException | NamingException skip) {}
-        });
-        return ret;
+        try {
+            String sql = "SELECT * FROM ctism_solicita_aula_solicitada";
+            Collection<Map<String,Object>> aulas = JDBCUtils.query( sql );
+            Collection<AulaSolicitada> ret = new java.util.LinkedHashSet<>();
+            for (Map<String, Object> aula : aulas) {
+                ret.add(new AulaSolicitada(aula));
+            }
+            return ret;
+        }catch (SQLException ex) {
+            return null;
+        }
     }
     
     @Override
     public Collection<AulaSolicitada> getAllBySituacao(Situacao situacao) {
-        org.hibernate.StatelessSession dbSession = HibernateUtils.getInstance().getStatelessSession();
-        Collection<AulaSolicitada> ret = dbSession.createCriteria(AulaSolicitada.class,"aula")
-                .createAlias("aula.situacao", "situacao")
-                .add(Restrictions.eq("situacao",situacao))
-                .addOrder(Order.asc("dataRecuperacao"))
-                .setCacheable(false)
-                .list();
-        dbSession.close();
-        ret.forEach((AulaSolicitada aula) -> {
-            try {
-                aula.setProfSubstituto(usuarioService.getByLdap(aula.getProfSubstitutoLdap()));
-            } catch (NamingException skip) {}
-        });
-        return ret;
+        try {
+            String sql = "SELECT * FROM ctism_solicita_aula_solicitada WHERE id_situacao = ? ORDER BY dt_recuperacao ASC";
+            Collection<Map<String,Object>> aulas = JDBCUtils.query( sql , situacao.getId() );
+            Collection<AulaSolicitada> ret = new java.util.LinkedHashSet<>();
+            for (Map<String, Object> aula : aulas) {
+                ret.add(new AulaSolicitada(aula));
+            }
+            return ret;
+        }catch (SQLException ex) {
+            return null;
+        }
     }
     
     @Override
     public Integer getCountBySituacao(Situacao situacao) {
+        try {
+            String sql = "SELECT COUNT(*) AS CNT FROM ctism_solicita_aula_solicitada WHERE id_situacao = ?";
+            Collection<Map<String, Object>> col = JDBCUtils.query(sql, situacao.getId());
+            return (int) col.iterator().next().get("CNT");
+        } catch (SQLException ex) {
+            return null;
+        }
+        /*
         org.hibernate.StatelessSession dbSession = HibernateUtils.getInstance().getStatelessSession();
         Number ret = (Number) dbSession.createCriteria(AulaSolicitada.class,"aula")
                 .createAlias("aula.situacao", "situacao")
@@ -115,11 +122,22 @@ public class AulaSolicitadaServiceImpl implements AulaSolicitadaService {
                 .setProjection(Projections.rowCount())
                 .uniqueResult();
         dbSession.close();
-        return ret.intValue();
+        return ret.intValue();*/
     }
     
     private Collection<AulaSolicitada> getAllWithXInDateInterval(String x, Calendar init, Calendar end) {
-        org.hibernate.StatelessSession dbSession = HibernateUtils.getInstance().getStatelessSession();
+        try {
+            String sql = "SELECT * FROM ctism_solicita_aula_solicitada WHERE " + x + " >= ? AND " + x + " < ? ORDER BY id_prof_substituto ASC, " + x + " DESC";
+            Collection<Map<String, Object>> col = JDBCUtils.query(sql, init.getTime(), end.getTime());
+            Collection<AulaSolicitada> ret = new java.util.LinkedHashSet<>();
+            for (Map<String, Object> map : col) {
+                ret.add(new AulaSolicitada(map));
+            }
+            return ret;
+        }catch (SQLException ex) {
+            return null;
+        }
+        /*org.hibernate.StatelessSession dbSession = HibernateUtils.getInstance().getStatelessSession();
         System.out.println("init: " + init.getTime());
         System.out.println("end: " + end.getTime());
         List<AulaSolicitada> ret = dbSession.createCriteria(AulaSolicitada.class)
@@ -136,21 +154,21 @@ public class AulaSolicitadaServiceImpl implements AulaSolicitadaService {
                 aula.setProfSubstituto(usuarioService.getByLdap(aula.getProfSubstitutoLdap()));
             } catch (Exception skip) {}
         });
-        return ret;
+        return ret;*/
     }
     
     @Override
     public Collection<AulaSolicitada> getAllInDateInterval(Calendar init, Calendar end) {
-        return getAllWithXInDateInterval("dataAula", init, end);
+        return getAllWithXInDateInterval("dt_aula", init, end);
     }
     
     @Override
     public Collection<AulaSolicitada> getAllWithRecInDateInterval(Calendar init, Calendar end) {
-        return getAllWithXInDateInterval("dataRecuperacao", init, end);
+        return getAllWithXInDateInterval("dt_recuperacao", init, end);
     }
     
     private Collection<AulaSolicitada> getAllWithXInDate(String x, Calendar date) {
-        System.out.println("[" + x + "] " + new SimpleDateFormat("dd-MM-YYYY").format(new Date(date.getTimeInMillis())));
+        //System.out.println("[" + x + "] " + new SimpleDateFormat("dd-MM-YYYY").format(new Date(date.getTimeInMillis())));
         Calendar dateCpy = (Calendar) date.clone();
         //calendar indica algum momemto do dia, precisamos do inicio e do final
         dateCpy.set(Calendar.HOUR_OF_DAY, 0);
@@ -160,7 +178,8 @@ public class AulaSolicitadaServiceImpl implements AulaSolicitadaService {
         end.set(Calendar.HOUR_OF_DAY, 23);
         end.set(Calendar.MINUTE, 59);
         end.set(Calendar.SECOND, 59);
-        org.hibernate.StatelessSession session = HibernateUtils.getInstance().getStatelessSession();
+        return getAllWithXInDateInterval(x, dateCpy, end);
+        /*org.hibernate.StatelessSession session = HibernateUtils.getInstance().getStatelessSession();
         Collection<AulaSolicitada> aulas = session.createCriteria(AulaSolicitada.class)
                 .add(Restrictions.gt(x, dateCpy.getTime()))
                 .add(Restrictions.lt(x, end.getTime()))
@@ -168,21 +187,32 @@ public class AulaSolicitadaServiceImpl implements AulaSolicitadaService {
                 .setCacheable(false)
                 .list();
         session.close();
-        return aulas;
+        return aulas;*/
     }
     
     @Override
     public Collection<AulaSolicitada> getAllInDate(Calendar date) {
-        return getAllWithXInDate("dataAula", date);
+        return getAllWithXInDate("dt_aula", date);
     }
 
     @Override
     public Collection<AulaSolicitada> getAllWithRecInDate(Calendar dia) {
-        return getAllWithXInDate("dataRecuperacao", dia);
+        return getAllWithXInDate("dt_recuperacao", dia);
     }
     
     private Collection<AulaSolicitada> getAllWithXAfterDate(String x, Calendar date) {
-        org.hibernate.StatelessSession dbSession = HibernateUtils.getInstance().getStatelessSession();
+        try {
+            String sql = "SELECT * FROM ctism_solicita_aula_solicitada WHERE " + x + " > ? ORDER BY id_prof_substituto ASC, " + x + " DESC";
+            Collection<Map<String, Object>> col = JDBCUtils.query(sql, date.getTime());
+            Collection<AulaSolicitada> ret = new java.util.LinkedHashSet<>();
+            for (Map<String, Object> map : col) {
+                ret.add(new AulaSolicitada(map));
+            }
+            return ret;
+        }catch (SQLException ex) {
+            return null;
+        }
+        /*org.hibernate.StatelessSession dbSession = HibernateUtils.getInstance().getStatelessSession();
         List<AulaSolicitada> ret = dbSession.createCriteria(AulaSolicitada.class)
                 .add(Restrictions.gt(x, date.getTime()))
                 .addOrder(Order.asc("profSubstituto"))
@@ -195,21 +225,32 @@ public class AulaSolicitadaServiceImpl implements AulaSolicitadaService {
                 aula.setProfSubstituto(usuarioService.getByLdap(aula.getProfSubstitutoLdap()));
             } catch (NamingException skip) {}
         });
-        return ret;
+        return ret;*/
     }
     
     @Override
     public Collection<AulaSolicitada> getAllAfterDate(Calendar date) {
-        return getAllWithXAfterDate("dataAula",date);
+        return getAllWithXAfterDate("dt_aula",date);
     }
     
     @Override
     public Collection<AulaSolicitada> getAllWithRecAfterDate(Calendar date) {
-        return getAllWithXAfterDate("dataRecuperacao",date);
+        return getAllWithXAfterDate("dt_recuperacao",date);
     }
     
     private Collection<AulaSolicitada> getAllWithXBeforeDate(String x,Calendar date) {
-        org.hibernate.StatelessSession dbSession = HibernateUtils.getInstance().getStatelessSession();
+        try {
+            String sql = "SELECT * FROM ctism_solicita_aula_solicitada WHERE " + x + " < ? ORDER BY id_prof_substituto ASC, " + x + " DESC";
+            Collection<Map<String, Object>> col = JDBCUtils.query(sql, date.getTime());
+            Collection<AulaSolicitada> ret = new java.util.LinkedHashSet<>();
+            for (Map<String, Object> map : col) {
+                ret.add(new AulaSolicitada(map));
+            }
+            return ret;
+        }catch (SQLException ex) {
+            return null;
+        }
+        /*org.hibernate.StatelessSession dbSession = HibernateUtils.getInstance().getStatelessSession();
         List<AulaSolicitada> ret = dbSession.createCriteria(AulaSolicitada.class)
                 .add(Restrictions.lt(x, date.getTime()))
                 .addOrder(Order.asc("profSubstituto"))
@@ -222,22 +263,47 @@ public class AulaSolicitadaServiceImpl implements AulaSolicitadaService {
                 aula.setProfSubstituto(usuarioService.getByLdap(aula.getProfSubstitutoLdap()));
             } catch (NamingException skip) {}
         });
-        return ret;
+        return ret;*/
     }
     
     @Override
     public Collection<AulaSolicitada> getAllBeforeDate(Calendar date) {
-        return getAllWithXBeforeDate("dataAula", date);
+        return getAllWithXBeforeDate("dt_aula", date);
     }
     
     @Override
     public Collection<AulaSolicitada> getAllWithRecBeforeDate(Calendar date) {
-        return getAllWithXBeforeDate("dataRecuperacao", date);
+        return getAllWithXBeforeDate("dt_recuperacao", date);
     }
 
+    //variavel 'tipo' diz se eh data da aula ou da recuperacao ou ambas
     @Override
     public Collection<AulaSolicitada> getBySolicitanteAndTipo(String ldapSolicitante, String tipo) {
-        org.hibernate.StatelessSession dbSession = HibernateUtils.getInstance().getStatelessSession();
+        
+        String sql = "SELECT * FROM ctism_solicita_aula_solicitada aula LEFT JOIN ctism_solicita_solicitacao sol ON aula.id_solicitacao = sol.id WHERE sol.id_professor = ? ";
+        Collection<Map<String, Object>> col;
+        if (!tipo.equalsIgnoreCase("todas")) {
+            tipo = tipo.equalsIgnoreCase("dataAula") ? "dt_aula" : "dt_recuperacao";
+            sql += " AND " + tipo + " > ? ORDER BY " + tipo + " ASC";
+            try {
+                col = JDBCUtils.query(sql, ldapSolicitante, new Date());
+            } catch (SQLException ex) {
+                return null;
+            }
+        } else {
+            sql += " ORDER BY dt_aula ASC";
+            try {
+                col = JDBCUtils.query(sql, ldapSolicitante);
+            }catch (SQLException ex) {
+                return null;
+            }
+        }
+        Collection<AulaSolicitada> ret = new java.util.LinkedHashSet<>();
+        for (Map<String, Object> map : col) {
+            ret.add(new AulaSolicitada(map));
+        }
+        return ret;
+        /*org.hibernate.StatelessSession dbSession = HibernateUtils.getInstance().getStatelessSession();
         
         Criteria qry = dbSession.createCriteria(AulaSolicitada.class,"aula")
                 .createAlias("aula.solicitacao", "solicitacao")
@@ -256,11 +322,32 @@ public class AulaSolicitadaServiceImpl implements AulaSolicitadaService {
             } catch (NullPointerException | NamingException skip) {}
         });
         dbSession.close();
-        return ret;
+        return ret;*/
     }
     
     @Override
     public Collection<AulaSolicitada> getBySubstitutoInSituacoes(Collection<Situacao> situacoes, String ldap) {
+        Collection<Object> params = new java.util.LinkedHashSet<>();
+        params.add(ldap);
+        String sql = "SELECT * FROM ctism_solicita_aula_solicitada WHERE id_prof_substituto = ? AND id_situacao IN (";
+        Boolean primeiro = Boolean.TRUE;
+        for (Situacao situacao : situacoes) {
+            sql += (primeiro) ? " ? " : " , ? ";
+            primeiro = Boolean.FALSE;
+            params.add(situacao.getId());
+        }
+        sql += ") ORDER BY dt_aula ASC";
+        try {
+            Collection<AulaSolicitada> ret = new java.util.LinkedHashSet<>();
+            Collection<Map<String, Object>> col = JDBCUtils.query(sql,params.toArray(new Object[params.size()]));
+            for (Map<String, Object> map : col) {
+                ret.add(new AulaSolicitada(map));
+            }
+            return ret;
+        } catch (SQLException ex) {
+            return null;
+        }
+        /*
         org.hibernate.StatelessSession dbSession = HibernateUtils.getInstance().getStatelessSession();
         Collection<AulaSolicitada> ret = dbSession.createCriteria(AulaSolicitada.class)
                 .add(Restrictions.in("situacao", situacoes))
@@ -276,10 +363,11 @@ public class AulaSolicitadaServiceImpl implements AulaSolicitadaService {
                 if (aula.getSolicitacao().getProfessor() == null) {
                     aula.getSolicitacao().setProfessor(usuarioService.getByLdap(aula.getSolicitacao().getProfessorLdap()));
                 }
-            }catch (NamingException skip) {}    
+            }catch (NamingException skip) {}
         });
         dbSession.close();
         return ret;
+        */
     }
     
     
@@ -290,7 +378,23 @@ public class AulaSolicitadaServiceImpl implements AulaSolicitadaService {
     
     @Override
     public Integer getCountBySubstitutoInSituacoes(Collection<Situacao> situacoes, String ldap) {
-        org.hibernate.StatelessSession dbSession = HibernateUtils.getInstance().getStatelessSession();
+        Collection<Object> params = new java.util.LinkedHashSet<>();
+        params.add(ldap);
+        String sql = "SELECT COUNT(*) AS CNT FROM ctism_solicita_aula_solicitada WHERE id_prof_substituto = ? AND id_situacao IN (";
+        Boolean primeiro = Boolean.TRUE;
+        for (Situacao situacao : situacoes) {
+            sql += (primeiro) ? " ? " : " , ? ";
+            primeiro = Boolean.FALSE;
+            params.add(situacao.getId());
+        }
+        sql += ")";
+        try {
+            Collection<Map<String, Object>> col = JDBCUtils.query(sql,params.toArray(new Object[params.size()]));
+            return (int) col.iterator().next().get("CNT");
+        } catch (SQLException ex) {
+            return null;
+        }
+        /*org.hibernate.StatelessSession dbSession = HibernateUtils.getInstance().getStatelessSession();
         Number ret = (Number) dbSession.createCriteria(AulaSolicitada.class)
                 .add(Restrictions.in("situacao", situacoes))
                 .add(Restrictions.eq("profSubstitutoLdap", ldap))
@@ -299,7 +403,7 @@ public class AulaSolicitadaServiceImpl implements AulaSolicitadaService {
                 .setProjection(Projections.rowCount())
                 .uniqueResult();
         dbSession.close();
-        return ret.intValue();
+        return ret.intValue();*/
     }
     
     @Override
@@ -307,29 +411,12 @@ public class AulaSolicitadaServiceImpl implements AulaSolicitadaService {
         return getCountBySubstitutoInSituacoes(Arrays.asList(situacao),ldap);
     }
     
-    @Override
-    public Boolean updateAula(AulaSolicitada aula) {
-        Boolean ret = Boolean.TRUE;
-        org.hibernate.StatelessSession dbSession = HibernateUtils.getInstance().getStatelessSession();
-        try {
-            dbSession.beginTransaction();
-            dbSession.update(aula);
-            dbSession.getTransaction().commit();
-        } catch (Exception ex) {
-            ret = Boolean.FALSE;
-            Transaction t = dbSession.getTransaction();
-            if (t != null && t.isActive()) {
-                t.rollback();
-            }
-        } finally {
-            dbSession.close();
-        }
-        return ret;
-    }
+    
 
     @Override
     public AulaSolicitada getById (Integer id) {
-        org.hibernate.StatelessSession dbSession = HibernateUtils.getInstance().getStatelessSession();
+        return AulaSolicitada.getById(id);
+        /*org.hibernate.StatelessSession dbSession = HibernateUtils.getInstance().getStatelessSession();
         AulaSolicitada ret = (AulaSolicitada) dbSession.createCriteria(AulaSolicitada.class)
                 .add(Restrictions.eq("id",id))
                 .uniqueResult();
@@ -340,12 +427,31 @@ public class AulaSolicitadaServiceImpl implements AulaSolicitadaService {
             ret.getSolicitacao().setProfessor(usuarioService.getByLdap(ret.getSolicitacao().getProfessorLdap()));
         } catch (NullPointerException | NamingException skip) {}
         dbSession.close();
-        return ret;
+        return ret;*/
     }
     
     @Override
     public Collection<AulaSolicitada> getBySituacoes (Collection<Situacao> situacoes) {
-        org.hibernate.StatelessSession dbSession = HibernateUtils.getInstance().getStatelessSession();
+        Collection<Object> params = new java.util.LinkedHashSet<>();
+        String sql = "SELECT COUNT(*) AS CNT FROM ctism_solicita_aula_solicitada WHERE id_situacao IN (";
+        Boolean primeiro = Boolean.TRUE;
+        for (Situacao situacao : situacoes) {
+            sql += (primeiro) ? " ? " : " , ? ";
+            primeiro = Boolean.FALSE;
+            params.add(situacao.getId());
+        }
+        sql += ")";
+        try {
+            Collection<AulaSolicitada> ret = new java.util.LinkedHashSet<>();
+            Collection<Map<String, Object>> col = JDBCUtils.query(sql,params.toArray(new Object[params.size()]));
+            for (Map<String, Object> map : col) {
+                ret.add(new AulaSolicitada(map));
+            }
+            return ret;
+        } catch (SQLException ex) {
+            return null;
+        }
+        /*org.hibernate.StatelessSession dbSession = HibernateUtils.getInstance().getStatelessSession();
         Collection<AulaSolicitada> ret = dbSession.createCriteria(AulaSolicitada.class,"aula")
                 .add(Restrictions.in("situacao", situacoes))
                 .createAlias("aula.solicitacao", "solicitacao")
@@ -369,7 +475,7 @@ public class AulaSolicitadaServiceImpl implements AulaSolicitadaService {
             }    
         });
         dbSession.close();
-        return ret;
+        return ret;*/
     }
     
     @Override
@@ -401,6 +507,26 @@ public class AulaSolicitadaServiceImpl implements AulaSolicitadaService {
             dbSession.close();
         }
         return Boolean.TRUE;
+    }
+    
+    @Override
+    public Boolean updateAula(AulaSolicitada aula) {
+        Boolean ret = Boolean.TRUE;
+        org.hibernate.StatelessSession dbSession = HibernateUtils.getInstance().getStatelessSession();
+        try {
+            dbSession.beginTransaction();
+            dbSession.update(aula);
+            dbSession.getTransaction().commit();
+        } catch (Exception ex) {
+            ret = Boolean.FALSE;
+            Transaction t = dbSession.getTransaction();
+            if (t != null && t.isActive()) {
+                t.rollback();
+            }
+        } finally {
+            dbSession.close();
+        }
+        return ret;
     }
     
 }

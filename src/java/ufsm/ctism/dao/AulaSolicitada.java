@@ -107,7 +107,7 @@ public class AulaSolicitada implements Serializable {
         }catch (ParseException ex) {
             this.dataRecuperacao = null;
         }
-        this.mailEnviado = (int) fromSQL.get("mail_enviado");
+        this.mailEnviado = Integer.parseInt(fromSQL.get("mail_enviado").toString());
     }
     
     /**

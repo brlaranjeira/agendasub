@@ -33,10 +33,8 @@ public class Situacao implements Serializable {
     public static final Integer SITUACAO_INDEFERIDA = 5;
 
     static Situacao getById(Integer id) {
-        Collection<Object> param = new java.util.LinkedHashSet<>();
-        param.add(id);
         try {
-            Collection<Map<String,Object>> col = JDBCUtils.query("SELECT descricao FROM ctism_solicita_situacao WHERE id = ?", param);
+            Collection<Map<String,Object>> col = JDBCUtils.query("SELECT descricao FROM ctism_solicita_situacao WHERE id = ?", id );
             for (Map<String,Object> line : col) {
                 Situacao ret = new Situacao();
                 ret.setDescricao(line.get("descricao").toString());

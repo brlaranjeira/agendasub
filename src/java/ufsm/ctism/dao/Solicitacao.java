@@ -35,12 +35,10 @@ import ufsm.ctism.utils.JDBCUtils;
 public class Solicitacao implements Serializable {
 
     static Solicitacao getById(Integer id) {
-        Collection<Object> param = new java.util.LinkedHashSet<>();
-        param.add(id);
         java.text.SimpleDateFormat dateformat = new java.text.SimpleDateFormat("yyyy-MM-dd ");
         java.text.SimpleDateFormat datetimeformat = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
-            Collection<Map<String,Object>> col = JDBCUtils.query("SELECT id_professor, datainicio, datafim, outro_motivo, data_solicitacao FROM ctism_solicita_solicitacao WHERE id = ?", param);
+            Collection<Map<String,Object>> col = JDBCUtils.query("SELECT id_professor, datainicio, datafim, outro_motivo, data_solicitacao FROM ctism_solicita_solicitacao WHERE id = ?", id );
             for (Map<String,Object> line : col) {
                 Solicitacao ret = new Solicitacao();
                 ret.setProfessorLdap(line.get("id_professor").toString());
