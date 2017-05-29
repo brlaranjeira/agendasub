@@ -86,6 +86,23 @@ public class SolicitacaoServiceImpl implements SolicitacaoService {
         });
         return ret; */
     }
+    
+    @Override
+    public Integer getNumAulas(Integer solicitacaoId) {
+        String sql = "SELECT COUNT(*) AS CNT FROM ctism_solicita_solicitacao WHERE id = ?";
+        try {
+            Collection<Map<String, Object>> col = JDBCUtils.query( sql , solicitacaoId );
+            return (int) col.iterator().next().get("CNT");
+        }catch (SQLException ex) {
+            return null;
+        }
+        /* org.hibernate.StatelessSession session = HibernateUtils.getInstance().getStatelessSession();
+        Long ret = (Long) session.createCriteria(AulaSolicitada.class)
+                .add(Restrictions.eq("solicitacao", new Solicitacao(solicitacaoId)))
+                .setProjection(Projections.rowCount()).uniqueResult();
+        session.close();
+        return ret.intValue(); */
+    }
 
     @Override
     public boolean save(Solicitacao solicitacao, Collection<AulaSolicitada> aulas) {
@@ -159,14 +176,6 @@ public class SolicitacaoServiceImpl implements SolicitacaoService {
         return ret;
     }
     
-    @Override
-    public Integer getNumAulas(Integer solicitacaoId) {
-        org.hibernate.StatelessSession session = HibernateUtils.getInstance().getStatelessSession();
-        Long ret = (Long) session.createCriteria(AulaSolicitada.class)
-                .add(Restrictions.eq("solicitacao", new Solicitacao(solicitacaoId)))
-                .setProjection(Projections.rowCount()).uniqueResult();
-        session.close();
-        return ret.intValue();
-    }
+    
     
 }
