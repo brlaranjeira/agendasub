@@ -5,6 +5,7 @@
  */
 package ufsm.ctism.service;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Map;
@@ -129,6 +130,30 @@ public class SolicitacaoServiceImpl implements SolicitacaoService {
             }
         }
         //ids do ldap estao ok, agora salvamos
+        
+        java.sql.Connection conn = JDBCUtils.beginTransaction();
+        String sql = "INSERT INTO ctism_solicita_solicitacao (id_professor,datainicio,datafim,outro_motivo,data_solicitacao) VALUES (?,?,?,?,?)";
+        Integer idSolicitacao;
+        try {
+            idSolicitacao = JDBCUtils.makeInsert(conn, sql, solicitacao.getProfessorLdap(),solicitacao.getDatainicio(),solicitacao.getDatafim(),solicitacao.getOutroMotivo(),solicitacao.getDataSolicitacao());
+            solicitacao.setId(idSolicitacao);
+        } catch (SQLException ex) {
+            JDBCUtils.rollBack(conn);
+            return Boolean.FALSE;
+        }
+        for (AulaSolicitada aula : aulas) {
+            aula.setSolicitacao(solicitacao);
+            sql = "INSERT INTO ctism_solicita_aula_solicitada (id_prof_substituto, id_componente, id_situacao, id_solicitacao, dt_aula, dt_recuperacao) VALUES (?,?,?,?,?,?)";
+            try {
+                Integer aulaId = JDBCUtils.makeInsert(conn, sql, aula.getProfSubstitutoLdap(),aula.getComponente().getId(),aula.getSituacao().getId(),idSolicitacao,aula.getDataAula(),aula.getDataRecuperacao());
+                aula.setId(aulaId);
+            } catch (SQLException ex) {
+                JDBCUtils.rollBack(conn);
+                return Boolean.FALSE;
+            }
+        }
+        return JDBCUtils.commit(conn);
+        /*
         org.hibernate.Session dbSession = HibernateUtils.getInstance().getStatefullSession();
         try {
             dbSession.beginTransaction();
@@ -152,10 +177,20 @@ public class SolicitacaoServiceImpl implements SolicitacaoService {
             }
         }
         return ret;
+        */
     }
     
     @Override
     public boolean deleteSolicitacao(Integer solicitacaoId) {
+        String sql = "DELETE FROM ctism_solicita_solicitacao WHERE id = ?";
+        try {
+            return JDBCUtils.delete(null,sql,solicitacaoId) > 0;
+        } catch (SQLException ex) {
+            return Boolean.FALSE;
+        }
+        
+        
+        /*
         org.hibernate.StatelessSession session = HibernateUtils.getInstance().getStatelessSession();
         session.beginTransaction();
         boolean ret = true;
@@ -174,6 +209,7 @@ public class SolicitacaoServiceImpl implements SolicitacaoService {
             session.close();
         }
         return ret;
+        */
     }
     
     

@@ -11,6 +11,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import javax.persistence.Column;
@@ -77,13 +78,9 @@ public class AulaSolicitada implements Serializable {
     public static AulaSolicitada getById(Integer id) {
         try {
             String sql = "SELECT * FROM ctism_solicita_aula_solicitada WHERE id = ?";
-            Collection<Object> params = new java.util.LinkedHashSet<>();
-            params.add(id);
-            Collection<Map<String,Object>> col = JDBCUtils.query(sql,params);
-            if (!col.iterator().hasNext()) {
-                return null;
-            }
-            return new AulaSolicitada(col.iterator().next());
+            Collection<Map<String,Object>> col = JDBCUtils.query(sql,id);
+            Iterator<Map<String, Object>> itr = col.iterator();
+            return itr.hasNext() ? new AulaSolicitada(itr.next()) : null;
         }catch (SQLException ex) {
             return null;
         }

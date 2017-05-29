@@ -8,6 +8,7 @@ package ufsm.ctism.service;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 import org.springframework.stereotype.Service;
 import ufsm.ctism.dao.MotivoAfastamento;
@@ -68,11 +69,9 @@ public class MotivoAfastamentoServiceImpl  implements MotivoAfastamentoService {
     @Override
     public MotivoAfastamento getById(Integer id) {
         Integer[] ids = {id};
-        Collection<MotivoAfastamento> list = getListByIds(ids);
-        if (list.isEmpty()) {
-            return null;
-        }
-        return list.iterator().next();
+        Iterator<MotivoAfastamento> itr = getListByIds(ids).iterator();
+        return itr.hasNext() ? itr.next() : null;
+        //return list.iterator().next();
         /* org.hibernate.StatelessSession dbSession = HibernateUtils.getInstance().getStatelessSession();
         MotivoAfastamento ret = (MotivoAfastamento) dbSession.createCriteria(MotivoAfastamento.class)
                 .add(Restrictions.eq("id", id)).uniqueResult();

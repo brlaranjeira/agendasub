@@ -280,7 +280,7 @@ public class AulaSolicitadaServiceImpl implements AulaSolicitadaService {
     @Override
     public Collection<AulaSolicitada> getBySolicitanteAndTipo(String ldapSolicitante, String tipo) {
         
-        String sql = "SELECT * FROM ctism_solicita_aula_solicitada aula LEFT JOIN ctism_solicita_solicitacao sol ON aula.id_solicitacao = sol.id WHERE sol.id_professor = ? ";
+        String sql = "SELECT aula.* FROM ctism_solicita_aula_solicitada aula LEFT JOIN ctism_solicita_solicitacao sol ON aula.id_solicitacao = sol.id WHERE sol.id_professor = ? ";
         Collection<Map<String, Object>> col;
         if (!tipo.equalsIgnoreCase("todas")) {
             tipo = tipo.equalsIgnoreCase("dataAula") ? "dt_aula" : "dt_recuperacao";
@@ -433,7 +433,7 @@ public class AulaSolicitadaServiceImpl implements AulaSolicitadaService {
     @Override
     public Collection<AulaSolicitada> getBySituacoes (Collection<Situacao> situacoes) {
         Collection<Object> params = new java.util.LinkedHashSet<>();
-        String sql = "SELECT COUNT(*) AS CNT FROM ctism_solicita_aula_solicitada WHERE id_situacao IN (";
+        String sql = "SELECT * FROM ctism_solicita_aula_solicitada WHERE id_situacao IN (";
         Boolean primeiro = Boolean.TRUE;
         for (Situacao situacao : situacoes) {
             sql += (primeiro) ? " ? " : " , ? ";
@@ -485,6 +485,13 @@ public class AulaSolicitadaServiceImpl implements AulaSolicitadaService {
     
     @Override
     public Boolean deleteAula(Integer idAula) {
+        String sql = "DELETE FROM ctism_solicita_aula_solicitada WHERE id = ?";
+        try {
+            return JDBCUtils.delete(null, sql, idAula) > 0;
+        }catch (SQLException ex) {
+            return Boolean.FALSE;
+        }
+        /*
         org.hibernate.StatelessSession dbSession = HibernateUtils.getInstance().getStatelessSession();
         dbSession.beginTransaction();
         try {
@@ -493,10 +500,12 @@ public class AulaSolicitadaServiceImpl implements AulaSolicitadaService {
                     .setInteger("id", idAula);
             query.executeUpdate();
             dbSession.getTransaction().commit();
+        */
             /**
              * CASO A SOLICITACAO TENHA FICADO SEM NENHUMA AULA SOLICITADA
              * A ENTIDADE SOLICITACAO EH APAGADA VIA TRIGGER
              */
+        /*    
         } catch (Exception ex) {
             Transaction t = dbSession.getTransaction();
             if (t != null) {
@@ -507,11 +516,42 @@ public class AulaSolicitadaServiceImpl implements AulaSolicitadaService {
             dbSession.close();
         }
         return Boolean.TRUE;
+        */
     }
     
     @Override
     public Boolean updateAula(AulaSolicitada aula) {
-        Boolean ret = Boolean.TRUE;
+        String sql = "UPDATE ctism_solicita_aula_solicitada SET id_prof_substituto = ?, id_componente = ?, id_situacao = ?, id_solicitacao = ?, dt_aula = ?, dt_recuperacao = ?, mail_enviado = ? WHERE id = ?";
+        
+        try {
+            Integer affectedRows = JDBCUtils.update(null, sql, aula.getProfSubstitutoLdap(), aula.getComponente().getId(), aula.getSituacao().getId(), aula.getSolicitacao().getId(), aula.getDataAula(), aula.getDataRecuperacao(), aula.getMailEnviado(), aula.getId());
+            return affectedRows > 0;
+        } catch (SQLException ex) {
+            return Boolean.FALSE;
+        }
+        /**
+         * id_prof_substituto = ?, 
+         * id_componente = ?,
+         * id_situacao = ?,
+         * id_solicitacao = ?,
+         * dt_aula = ?,
+         * dt_recuperacao = ?,
+         * mail_enviado = ?
+         * WHERE id = ?
+         */
+        
+        /**
+         * aula.getProfSubstitutoLdap(),
+         * aula.getComponente().getId(),
+         * aula.getSituacao().getId(),
+         * aula.getSolicitacao().getId(),
+         * aula.getDataAula(),
+         * aula.getDataRecuperacao(),
+         * aula.getMailEnviado(),
+         * aula.getId()
+         */
+        
+        /*Boolean ret = Boolean.TRUE;
         org.hibernate.StatelessSession dbSession = HibernateUtils.getInstance().getStatelessSession();
         try {
             dbSession.beginTransaction();
@@ -527,6 +567,7 @@ public class AulaSolicitadaServiceImpl implements AulaSolicitadaService {
             dbSession.close();
         }
         return ret;
+        */
     }
     
 }
