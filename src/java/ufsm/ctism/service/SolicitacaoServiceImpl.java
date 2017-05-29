@@ -5,7 +5,11 @@
  */
 package ufsm.ctism.service;
 
+import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.naming.NamingException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -19,6 +23,7 @@ import ufsm.ctism.dao.AulaSolicitada;
 import ufsm.ctism.dao.Solicitacao;
 import ufsm.ctism.dao.Usuario;
 import ufsm.ctism.utils.HibernateUtils;
+import ufsm.ctism.utils.JDBCUtils;
 
 /**
  *
@@ -32,22 +37,44 @@ public class SolicitacaoServiceImpl implements SolicitacaoService {
     
     @Override
     public Collection<Solicitacao> getAll() {
-        org.hibernate.StatelessSession dbSession = HibernateUtils.getInstance().getStatelessSession();
-        dbSession.createCriteria(Solicitacao.class).addOrder(Order.desc("datainicio"));
-        Collection<Solicitacao> ret = dbSession.createCriteria(Solicitacao.class)
-                .addOrder(Order.desc("datainicio")).list();
-        dbSession.close();
-        ret.forEach( solicitacao -> {
+        String sql = "SELECT * FROM ctism_solicita_solicitacao";
+        try {
+            Collection<Map<String, Object>> rows = JDBCUtils.query(sql);
+            Collection<Solicitacao> ret = new java.util.LinkedHashSet<>();
+            for (Map<String, Object> map : rows) {
+                ret.add(new Solicitacao(map));
+            }
+            return ret;
+        } catch (SQLException ex) {
+            return null;
+        }
+        /*org.hibernate.StatelessSession dbSession = HibernateUtils.getInstance().getStatelessSession();
+            dbSession.createCriteria(Solicitacao.class).addOrder(Order.desc("datainicio"));
+            Collection<Solicitacao> ret = dbSession.createCriteria(Solicitacao.class)
+            .addOrder(Order.desc("datainicio")).list();
+            dbSession.close();
+            ret.forEach( solicitacao -> {
             try {
-                solicitacao.setProfessor(usuarioService.getByLdap(solicitacao.getProfessorLdap()));
+            solicitacao.setProfessor(usuarioService.getByLdap(solicitacao.getProfessorLdap()));
             } catch (NamingException skip) {}
-        });
-        return ret;
+            });
+            return ret;*/
     }
 
     @Override
     public Collection<Solicitacao> getAllBySolicitante(String ldap) {
-        org.hibernate.StatelessSession dbSession = HibernateUtils.getInstance().getStatelessSession();
+        String sql = "SELECT * FROM ctism_solicita_solicitacao WHERE id_professor = ? ORDER BY datainicio DESC";
+        try {
+            Collection<Map<String, Object>> rows = JDBCUtils.query(sql, ldap);
+            Collection<Solicitacao> ret = new java.util.LinkedHashSet<>();
+            for (Map<String, Object> map : rows) {
+                ret.add(new Solicitacao(map));
+            }
+            return ret;
+        }catch (SQLException ex) {
+            return null;
+        }
+        /* org.hibernate.StatelessSession dbSession = HibernateUtils.getInstance().getStatelessSession();
         Collection<Solicitacao> ret = dbSession.createCriteria(Solicitacao.class)
                 .add(Restrictions.eq("professor",ldap))
                 .addOrder(Order.desc("datainicio")).list();
@@ -57,7 +84,7 @@ public class SolicitacaoServiceImpl implements SolicitacaoService {
                 solicitacao.setProfessor(usuarioService.getByLdap(ldap));
             } catch (NamingException skip) {}
         });
-        return ret;
+        return ret; */
     }
 
     @Override

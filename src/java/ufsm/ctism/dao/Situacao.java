@@ -59,6 +59,11 @@ public class Situacao implements Serializable {
     public Situacao(Integer id) {
         this.id = id;
     }
+
+    public Situacao(Map<String, Object> map) {
+        this.id = (int) map.get("id");
+        this.descricao = map.get("descricao").toString();
+    }
     
     /**
      * 

@@ -7,6 +7,7 @@
 package ufsm.ctism.dao;
 
 import java.io.Serializable;
+import java.util.Map;
 import javax.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -30,6 +31,11 @@ public class MotivoAfastamento implements Serializable {
 
     public MotivoAfastamento() {
         
+    }
+
+    public MotivoAfastamento(Map<String, Object> map) {
+        this.id = (int) map.get("id");
+        this.descricao = map.get("descricao").toString();
     }
 
     /**

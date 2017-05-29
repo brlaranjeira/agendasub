@@ -47,6 +47,11 @@ public class Componente implements Serializable {
     @Column
     private String nome;
     
+    public Componente(Map<String,Object> map) {
+        this.id = (int)map.get("idcomponente");
+        this.nome = map.get("nome").toString();
+    }
+    
     public Componente(){}
 
     /**

@@ -6,8 +6,11 @@
 package ufsm.ctism.dao;
 
 import java.io.Serializable;
+import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -35,24 +38,12 @@ import ufsm.ctism.utils.JDBCUtils;
 public class Solicitacao implements Serializable {
 
     static Solicitacao getById(Integer id) {
-        java.text.SimpleDateFormat dateformat = new java.text.SimpleDateFormat("yyyy-MM-dd ");
-        java.text.SimpleDateFormat datetimeformat = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String sql = "SELECT * FROM ctism_solicita_solicitacao WHERE id = ?";
         try {
-            Collection<Map<String,Object>> col = JDBCUtils.query("SELECT id_professor, datainicio, datafim, outro_motivo, data_solicitacao FROM ctism_solicita_solicitacao WHERE id = ?", id );
-            for (Map<String,Object> line : col) {
-                Solicitacao ret = new Solicitacao();
-                ret.setProfessorLdap(line.get("id_professor").toString());
-                ret.setProfessor(Usuario.getByLDAP(ret.getProfessorLdap()));
-                ret.setDatainicio(dateformat.parse(line.get("datainicio").toString()));
-                ret.setDatafim(dateformat.parse(line.get("datafim").toString()));
-                Object outro = line.get("outro_motivo");
-                ret.setOutroMotivo(outro != null ? outro.toString() : null);
-                ret.setDataSolicitacao(datetimeformat.parse(line.get("data_solicitacao").toString()));
-                ret.setId(id);
-                return ret;
-            }
-            return null;
-        }catch (java.sql.SQLException | java.text.ParseException ex) {
+            Collection<Map<String,Object>> row = JDBCUtils.query( sql , id );
+            Iterator<Map<String, Object>> itr = row.iterator();
+            return itr.hasNext() ? new Solicitacao(itr.next()) : null;
+        }catch (SQLException ex) {
             return null;
         }
     }
@@ -96,6 +87,29 @@ public class Solicitacao implements Serializable {
         this.id = id;
     }
     public Solicitacao() {}
+
+    public Solicitacao(Map<String, Object> map) {
+        java.text.SimpleDateFormat dateformat = new java.text.SimpleDateFormat("yyyy-MM-dd ");
+        java.text.SimpleDateFormat datetimeformat = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        this.id = (int)map.get("id");
+        this.professorLdap = map.get("id_professor").toString();
+        this.professor = Usuario.getByLDAP(professorLdap);
+        try {
+            this.datainicio = dateformat.parse(map.get("datainicio").toString());
+        }catch (ParseException ex) {
+            this.datainicio = null;
+        }
+        try {
+            this.datafim = dateformat.parse(map.get("datafim").toString());
+        }catch (ParseException ex) {
+            this.datafim = null;
+        }
+        try {
+            this.dataSolicitacao = datetimeformat.parse(map.get("data_solicitacao").toString());
+        }catch (ParseException ex) {
+            this.dataSolicitacao = null;
+        }
+    }
     
     /**
      * 

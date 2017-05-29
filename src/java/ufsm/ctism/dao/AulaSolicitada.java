@@ -89,25 +89,25 @@ public class AulaSolicitada implements Serializable {
         }
     }
     
-    public AulaSolicitada( Map<String,Object> fromSQL ) {
-        java.text.SimpleDateFormat dateformat = new java.text.SimpleDateFormat("yyyy-MM-dd ");
-        this.id = (int) fromSQL.get("id");
-        this.profSubstitutoLdap = fromSQL.get("id_prof_substituto").toString();
+    public AulaSolicitada( Map<String,Object> map ) {
+        java.text.SimpleDateFormat dateformat = new java.text.SimpleDateFormat("yyyy-MM-dd");
+        this.id = (int) map.get("id");
+        this.profSubstitutoLdap = map.get("id_prof_substituto").toString();
         this.profSubstituto = Usuario.getByLDAP(profSubstitutoLdap);
-        this.componente = Componente.getById((int)fromSQL.get("id_componente"));
-        this.situacao = Situacao.getById((int)fromSQL.get("id_situacao"));
-        this.solicitacao = Solicitacao.getById((int)fromSQL.get("id_solicitacao"));
+        this.componente = Componente.getById((int)map.get("id_componente"));
+        this.situacao = Situacao.getById((int)map.get("id_situacao"));
+        this.solicitacao = Solicitacao.getById((int)map.get("id_solicitacao"));
         try {
-            this.dataAula = dateformat.parse(fromSQL.get("dt_aula").toString());
+            this.dataAula = dateformat.parse(map.get("dt_aula").toString());
         } catch (ParseException ex) {
             this.dataAula = null;
         }
         try {
-            this.dataRecuperacao = dateformat.parse(fromSQL.get("dt_recuperacao").toString());
+            this.dataRecuperacao = dateformat.parse(map.get("dt_recuperacao").toString());
         }catch (ParseException ex) {
             this.dataRecuperacao = null;
         }
-        this.mailEnviado = Integer.parseInt(fromSQL.get("mail_enviado").toString());
+        this.mailEnviado = Integer.parseInt(map.get("mail_enviado").toString());
     }
     
     /**
